@@ -1,0 +1,44 @@
+\newgeometry{includemp=true,
+             inner=2cm,outer=2cm,
+             top=2cm,bottom=1.5cm,
+             headsep=0.5cm,headheight=0.5cm,
+             footskip=0.7cm,
+             marginparsep=0cm,marginparwidth=0cm}
+\thispagestyle{empty}
+\bookmark[page=2, level=1]{扉页}
+
+\begin{tikzpicture}[remember picture,overlay]
+    \node at (current page.north west)
+      {
+        \begin{tikzpicture}[remember picture,overlay]
+          \draw[fill=lbdeepblue,draw opacity=0]
+            ++(0,-2cm) rectangle ++(\paperwidth,-4pt);
+          \node[color=lbdeepblue,text width=13cm] (text)
+            at  (0.5\paperwidth,-0.25\paperheight)
+            {\titlefont\fontsize{40}{80}\selectfont  线性代数与解析几何\\[0.45cm] 入门讲义};
+          \node[color=lbdeepgreen,below right,text width=13cm] (V) at ($(text.south west)+(0.5em,-1em)$)
+          {\fontsize{13}{15}\selectfont \fontspec{Palatino-Roman} Linear Algebra and Analytic Geometry\\ Introductory Notes};
+          \draw[line width=2pt,color=lbgreen]
+            ++(2cm,-2cm) |- ($(text.south east)+(0,-2.5cm)$);
+        \end{tikzpicture}
+      };
+\end{tikzpicture}
+
+\vspace*{10cm}
+
+\hspace{0.15\linewidth}\begin{minipage}{0.71\linewidth}
+  % \zihao{5}
+  \begin{flushright}\fontspec{Palatino-Roman}\selectfont\titlefont
+    彭康书院学业辅导与发展中心志愿者部~~编写
+\date{\zhtoday}  
+\end{flushright}
+\end{minipage}
+
+\vfill
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.1]{xdt-logo.png}
+\end{figure}
+
+\restoregeometry

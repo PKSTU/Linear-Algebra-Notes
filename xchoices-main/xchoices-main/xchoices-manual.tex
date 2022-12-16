@@ -1,0 +1,647 @@
+\documentclass{xdyy-usermanual}
+\usepackage{xchoices}
+
+\xdyymanualsetup{
+  info = {
+    author            = {夏康玮},
+    title             = {\pkg{xchoices} 宏包},
+    email             = {kangweixia_xdyy@163.com},
+    date              = {2022-02-03},
+    version           = {0.1.1},
+    github-repository = {https://github.com/xkwxdyy/xchoices},
+    gitee-repository  = {https://gitee.com/xkwxdyy/xchoices},
+  }
+}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{宏包简介}
+
+\pkg{xchoices}宏包是一个用于排版选项的宏包, 包含但不限于以下特点：
+
+\begin{enumerate}
+  \item 可以排版任意数量的选项
+  \item 可以方便切换标签风格 \meta{label-style}
+  \item 可以更改标签 \meta{label} 与内容的相对位置
+  \item 可以调整标签 \meta{label} 的偏移
+\end{enumerate}
+
+
+\section{宏包开发背景}
+
+
+已经存在用 \href{https://www.latexstudio.net/index/details/index/mid/2270.html}{\pkg{ifthen}宏包} 或者用 \href{https://www.latexstudio.net/index/details/index/mid/2191.html}{\pkg{xcoffins}宏包} 写的相关选项命令, 用于排版试卷中的选择题, 常见的形如 \tn{xx\marg{arg1}\marg{arg2}\marg{arg3}\marg{arg4}}, 但是有几个不足（以 \tn{xx} 命令为例）:
+\begin{enumerate}
+  \item 从用户接口角度看：这样定义的命令只能且必须接受四个参数
+    \begin{itemize}
+      \item 如果输入少于四个, 那么就会有空白项出现, 比如\verb*|D.  |
+      \item 如果想要输入多于四个固然可以用同样的方式再定义相应的命令, 但是可能事先并不知道有多少个选项, 通常的解决办法是先建立很多个命令分别作用于$1, 2, \cdots, 9$个命令, 比较麻烦不够简洁, 而且问题又来了: 通常的LaTeX命令参数最多有9个, 如果有排版更多项的需求时, 传统的方法一般是通过多个命令嵌套实现，但是无论是代码实现还是用户接口都不令人满意, 十分繁琐！
+      
+      \emph{所以希望存在一个相同接口的命令或环境, 可以排版任意个选项.}
+    \end{itemize}
+  \item 从代码实现角度看, 已有命令的代码在实现上有很大的优化空间
+  \item 从功能的延拓性看：现有的一些命令中，“ABCD”往往是手动输入进行封装, 对 \meta{label} 样式切换造成了困难。而在选项排版中，不同的 \meta{label}  样式的方便切换（ 比如 arabic, roman等）也是一个大需求，所以需要在排出来的基础上提供方便的 \kvopt{\meta{key}}{\meta{val}} 接口来进行控制
+\end{enumerate}
+
+
+
+\section{用户接口}
+
+
+
+\subsection{命令环境}
+
+
+\begin{function}[added = 2022-01-30]{\xchoicesetup}
+  \begin{syntax}
+    |\xchoicesetup| \marg{键值列表}
+  \end{syntax}
+  宏包相关键值的设置, 影响使用该命令后面的 \env{xchoices} 的相关初始值.
+\end{function}
+
+
+\begin{function}[added = 2022-01-30]{xchoices}
+  \begin{syntax}
+    |\begin{xchoices}|\oarg{\kvopt{\meta{keys}}{\meta{vals}}} 
+    |  \item <item1>|
+    |  \item* <item2>|
+    |  ...|
+    |\end{xchoices}|
+  \end{syntax}
+  排版选项环境，通过 \tn{item} 或 \tn{item*} 分隔，其中 \tn{item*} 表示标记此选项为正确选项，为后续答案输出做准备。详细请看 \ref{subsubsec:答案控制}。语法与 \env{enumerate} 环境等 \cmd{list} 环境类似，降低用户使用学习成本。键值设置与 \tn{xchoicesetup} 相同，在后面 \ref{subsec:键值列表} 介绍。
+\end{function}
+
+\begin{function}{\xparen}
+  \begin{syntax}
+    |\xparen|
+  \end{syntax}
+  用于排版选择题题干后的括号，内容多时可自动换到下一行末尾，如果换行则需要编译两次。
+  \begin{vexample}
+    这是短题干 \xparen
+  \end{vexample}
+  \begin{vexample}
+    这是长长长长长长长长长长长长长长长长长长长长长长长长长长长长长题干 \xparen
+  \end{vexample}
+\end{function}
+
+
+\begin{function}{\quan}
+  \begin{syntax}
+    |\quan| \marg{number}
+  \end{syntax}
+  基于 \pkg{tikz} 宏包绘制的带圈数字命令, 根据数字大小判断进行水平垂直方向的压缩, 可单独使用. 
+  \begin{hexample}
+    \quan{6} \quan{66} \quan{666}
+  \end{hexample}
+\end{function}
+
+
+
+
+\subsection{键值列表}\label{subsec:键值列表}
+
+
+\subsubsection{ \cmd{label-style} }
+
+
+\begin{function}[updated = 2022-01-11]{label-style}
+  \begin{syntax}
+    label-style = \meta{arabic, alph, Alph, roman, Roman, quan, chinese, none} 
+    \init{Alph}
+  \end{syntax}
+  设置标签的风格: 
+  \begin{itemize}
+    \item arabic: 阿拉伯数字
+    \item alph: 小写英文
+    \item Alph: 大写英文
+    \item roman: 小写罗马数字
+    \item Roman: 大写罗马数字
+    \item quan: 带圈数字
+    \item chinese: 中文数字
+    \item none: 没有计数的空白效果
+  \end{itemize}
+\end{function}
+\begin{vexample}
+    \begin{xchoices}[label-style = arabic]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-style = alph]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-style = Alph]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-style = roman]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-style = Roman]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-style = quan]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-style = chinese]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-style = none]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+
+\subsubsection{ \cmd{items} }
+
+
+\begin{function}{items}
+  \begin{syntax}
+    |items| = \meta{number}
+  \end{syntax}
+  手动设置每行排多少项(否则会根据选项宽度自动计算)
+\end{function}
+\begin{vexample}
+    \begin{xchoices}
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[items = 2]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+
+
+\subsubsection{ \cmd{pre-label}, \cmd{post-label} }
+
+
+\begin{function}{pre-label}
+  \begin{syntax}
+    |pre-label| = \marg{sth placed before label} \init{{}}
+  \end{syntax}
+  标签后的相关设置, 类似于 \pkg{hlist} 宏包的 \cmd{pre label}, 默认是空. 
+\end{function}
+\begin{vexample}
+    \begin{xchoices}[pre-label = {(}]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+\begin{function}{post-label}
+  \begin{syntax}
+    |post-label| = \marg{sth placed after label} \init{{.}}
+  \end{syntax}
+  标签后的相关设置, 类似于 \pkg{hlist} 宏包的 \cmd{post label}, 默认是加一个点, 产生效果为|A.|
+  \begin{itemize}
+    \item \cmd{label-style} 设置为 \cmd{quan} 的时候会默认把 \cmd{poslabel}的点去掉
+    \item \cmd{label-style} 设置为 \cmd{chinese} 的时候会默认把 \cmd{poslabel}的点改为中文的顿号“、”
+  \end{itemize}
+\end{function}
+\begin{vexample}
+    \begin{xchoices}[post-label = {)}]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+
+\subsubsection{ \cmd{label-pos} }
+
+
+\begin{function}{label-pos}
+  \begin{syntax}
+    |label-pos| = \meta{方位} \init{left}
+  \end{syntax}
+  标签与内容的相对位置，\cmd{right}系列时会把 \cmd{pre-label} 设置为“.”，\cmd{post-label} 设置为“{}”, 产生|.A|的效果
+  \begin{itemize}
+    \item top, top-center：正上方
+    \item top-left：上左方
+    \item top-right：上右方
+    \item bottom, bottom-center：正下方
+    \item bottom-left：下左方
+    \item bottom-right：下右方
+    \item left, left-center：正左方
+    \item left-top：左上方
+    \item left-bottom：左下方
+    \item right, right-center：正左方
+    \item right-top：左上方
+    \item right-bottom：左下方
+  \end{itemize}
+\end{function}
+\begin{vexample}
+    \begin{xchoices}[label-pos = top]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = top-center]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+\begin{vexample}
+    \begin{xchoices}[label-pos = top-left]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = top-right]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = bottom]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = bottom-center]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+\begin{vexample}
+    \begin{xchoices}[label-pos = bottom-left]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = bottom-right]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = left]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = left-center]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = left-top]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = left-bottom]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = right]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = right-center]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = right-top]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = right-bottom]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+
+从上面的 \cmd{label-pos} 示例可以看出，其实很容易记住这些方位，拿 \meta{pos1}-\meta{pos2}为例：
+  \begin{itemize}
+    \item \meta{pos1} 其实就是 \cmd{label} 在内容整体的方位，就是上下左右四个位置
+    \item \meta{pos2} 是位置的细节，比如 \meta{pos1} 为 \cmd{top}, \cmd{bottom} 的时候 \meta{pos2} 就是左中右（ \cmd{left}, \cmd{center}, \cmd{right} ），\meta{pos1} 为 \cmd{left}, \cmd{right} 的时候 \meta{pos2} 就是上中下（或顶部中部底部），即 \cmd{top}, \cmd{center}, \cmd{bottom}， 特别地 \cmd{center} 可以省略，即 \cmd{right} 为 \cmd{right-center} 的效果
+  \end{itemize}
+此想法和本人编写的另一个 \pkg{text-figure} 宏包 （
+  \href{https://github.com/xkwxdyy/text-figure}{github仓库}, 
+  \href{https://gitee.com/xkwxdyy/text-figure}{gitee仓库}
+）是相同的
+
+\subsubsection{ \cmd{label-vsep}, \cmd{label-hsep} }
+
+
+\begin{function}{label-vsep, label-hsep}
+  \begin{syntax}
+    |label-vsep| = \marg{dimension}  \init{0pt}
+    |label-hsep| = \marg{dimension}  \init{0pt}
+  \end{syntax}
+  \cmd{label} 的垂直和水平的额外偏移量
+\end{function}
+
+\begin{vexample}
+    \begin{xchoices}[label-pos = left, label-hsep = 10pt]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+\begin{vexample}
+    \begin{xchoices}[label-pos = left, label-hsep = 0pt]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+\begin{vexample}
+    \begin{xchoices}[label-pos = left, label-vsep = 10pt]
+      \item \includegraphics[width = 1.5cm]{example-image-a}
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+
+\subsubsection{ \cmd{v-sep}, \cmd{h-sep} }
+
+
+\begin{function}{v-sep, h-sep}
+  \begin{syntax}
+    |v-sep| = \marg{dimension}  \init{0pt}
+    |h-sep| = \marg{dimension}  \init{0pt}
+  \end{syntax}
+  两行之间垂直额外偏移量和两列之间的水平额外偏移量。
+  \begin{remark}
+    \cmd{h-sep} 是通过 \env{hlist} 的 \cmd{col sep} 接口实现，\meta{dimension} 的值往往不是实际的效果值
+  \end{remark}
+\end{function}
+
+\begin{vexample}
+    \begin{xchoices}[items = 2, h-sep = 4em]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+\begin{vexample}
+    \begin{xchoices}[items = 2]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+\begin{vexample}
+    \begin{xchoices}[items = 2, v-sep = 1em]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+
+
+\subsubsection{ \cmd{v-offset}, \cmd{h-offset} }
+
+
+\begin{function}{v-offset, h-offset}
+  \begin{syntax}
+    |v-offset| = \marg{dimension}
+    |h-offset| = \marg{dimension}
+  \end{syntax}
+  整体的垂直偏移与水平偏移
+  \begin{remark}
+    这不是额外偏移量，而是从初始的左上开始的偏移，所以可能会出现设置了之后反而“往回走”的情况，这是因为根据不同的 \cmd{label-pos} 预设了不同的初始值
+  \end{remark}
+\end{function}
+
+\begin{vexample}
+    \begin{xchoices}[items = 2, label-pos = top]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+\begin{vexample}
+    \begin{xchoices}[items = 2, label-pos = top, h-offset = 2em]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+\end{vexample}
+
+
+
+\subsubsection{ \cmd{top}, \cmd{bottom} }
+
+
+\begin{function}{top, bottom}
+  \begin{syntax}
+    |top| = \marg{dimension}  \init{0pt}
+    |bottom| = \marg{dimension}  \init{0pt}
+  \end{syntax}
+  整体与上方内容和下方内容的额外垂直距离
+\end{function}
+\begin{vexample}
+    test
+    \begin{xchoices}
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+    test
+\end{vexample}
+\begin{vexample}
+    test
+    \begin{xchoices}[top = -1em, bottom = 1em]
+      \item 选项1
+      \item 选项2
+      \item 选项3
+      \item 选项4
+    \end{xchoices}
+    test
+\end{vexample}
+
+\subsubsection{ 答案控制系列：\\ \cmd{showanswer}, \cmd{answer-label-content}, \cmd{answer-label-color} }\label{subsubsec:答案控制}
+
+通过 \tn{item*} 给选项“标上正确记号”，最终可以输出正确答案（见下面的示例） 
+
+\begin{function}{showanswer}
+  \begin{syntax}
+    |showanswer| = \meta{true, false}  \init{false}
+  \end{syntax}
+  是否显示答案
+\end{function}
+
+\begin{function}{answer-label-content}
+  \begin{syntax}
+    |answer-label-content| = \marg{content}  \init{【参考答案】}
+  \end{syntax}
+  答案前面的内容，可自己设置字体字号等，自由度高
+\end{function}
+
+\begin{function}{answer-label-color}
+  \begin{syntax}
+    |answer-label-color| = \marg{color}   \init{violet}
+  \end{syntax}
+  \cmd{answer-label-content} 的颜色
+  % \begin{remark}
+  %   如果要用 \cmd{rgb} 模式等其它方式定义颜色，最好给 \meta{color} 带上花括号以防报错
+  % \end{remark}
+\end{function}
+
+\begin{vexample}
+    \begin{xchoices}[showanswer]
+      \item* 正确答案
+      \item* 正确答案
+      \item 错误答案
+      \item 错误答案
+      \item* 正确答案
+    \end{xchoices}
+\end{vexample}
+
+\begin{vexample}
+    \begin{xchoices}[
+      label-style = quan,
+      showanswer,
+      answer-label-content = {\large \textbf{【标准答案】}},
+      answer-label-color = {pink}
+    ]
+      \item* 正确答案
+      \item* 正确答案
+      \item 错误答案
+      \item 错误答案
+      \item* 正确答案
+    \end{xchoices}
+\end{vexample}
+
+
+% \subsubsection{ \cmd{mode} }
+
+% \begin{function}{mode}
+%   \begin{syntax}
+%     |mode| = \meta{text, figure} \init{text}
+%   \end{syntax}
+%   当前的选项模式。 \cmd{text} 表示文本模式， \cmd{figure} 表示图片模式，在选项中有插图命令是可切换为图片模式，偏移的参数会进行相应细微的调整。
+% \end{function}
+
+% \begin{vexample}
+%     \begin{xchoices}[mode = text, label-pos = bottom-center]
+%       \item* 正确答案
+%       \item* \includegraphics[width = 2cm]{example-image-a}
+%       \item 错误答案
+%       \item 错误答案
+%     \end{xchoices}
+
+%     \begin{xchoices}[mode = figure, label-pos = bottom-center]
+%       \item* 正确答案
+%       \item* \includegraphics[width = 2cm]{example-image-a}
+%       \item 错误答案
+%       \item 错误答案
+%     \end{xchoices}
+% \end{vexample}
+\end{document}

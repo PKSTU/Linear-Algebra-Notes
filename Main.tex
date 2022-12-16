@@ -1,0 +1,135 @@
+\documentclass[custom]{linearbook}
+\usepackage{float}
+\usepackage{xchoices}
+\usepackage{extarrows}
+\usepackage{arydshln}
+\usepackage{physics}
+
+\begin{document}
+% \tikzexternaldisable
+
+\frontmatter
+\pagenumbering{Alph}
+% 封面
+%--------------------------------------------------------------------------
+\bookmark[page=1, level=1]{封面}
+\includepdf[noautoscale=true, width=\paperwidth]{images/cover.pdf}
+
+% 扉页
+%--------------------------------------------------------------------------
+\pagenumbering{roman}
+\setcounter{page}{1}
+\pagestyle{front}
+\clearsidenotenumber
+\input{other/titlepage.tex}
+
+% 版权页
+%--------------------------------------------------------------------------
+%\input{other/copyright.tex}
+
+% 作者简介
+%--------------------------------------------------------------------------
+\input{other/author.tex}
+
+% 序
+%--------------------------------------------------------------------------
+%\input{other/forword.tex}
+
+% 前言
+%--------------------------------------------------------------------------
+\input{other/preface.tex}
+
+% 致谢
+%--------------------------------------------------------------------------
+%\input{other/acknowledgment.tex}
+
+% 重排按
+%--------------------------------------------------------------------------
+%\input{other/retypestate.tex}
+
+% 目录
+%--------------------------------------------------------------------------
+\newpage
+\bookmark[page=16, level=0]{目录}
+\newgeometry{includemp=true,
+    inner=2cm,outer=1.2cm,
+    top=2cm,bottom=1.5cm,
+    headsep=0.5cm,headheight=0.5cm,
+    footskip=0.7cm,
+    marginparsep=0.4cm,marginparwidth=3cm}
+\pagestyle{toc}
+% \addtocontents{toc}{~\kern-10em{\color{lbgreen}\hrule width \textwidth height 2pt depth 0pt}} % 目录添加横线
+\tableofcontents
+\restoregeometry
+\cleardoublepage                % 必须加上否则,会出错
+
+\mainmatter
+\pagestyle{main}
+%---------------------------------------------------------------------------
+% Chapters
+%---------------------------------------------------------------------------
+% \input{content/ch.tex}
+% \input{content/ch0.tex}
+
+% \input{content/ch.tex}
+\cleardoublepage
+\newgeometry{top=2.0cm,bottom=2cm,inner=2cm,outer=2cm}
+\part{行列式}
+\cleardoublepage
+\restoregeometry
+
+\input{content/ch1.tex}
+
+\cleardoublepage
+\newgeometry{top=2.0cm,bottom=2cm,inner=2cm,outer=2cm}
+\part{矩阵}
+\cleardoublepage
+\restoregeometry
+% \input{content/ch.tex}
+\input{content/ch2.1.tex}
+
+\input{content/ch2.2.tex}
+
+\input{content/ch2.3.tex}
+
+\input{content/ch2.4.tex}
+
+\input{content/ch2.5.tex}
+% xelatex --synctex=1 Main.tex
+\cleardoublepage
+\newgeometry{top=2.0cm,bottom=2cm,inner=2cm,outer=2cm}
+\part{解析几何初步}
+\cleardoublepage
+\restoregeometry
+\input{content/ch3.1.tex}
+
+\input{content/ch3.2.tex}
+
+\input{content/ch3.3.tex}
+
+\backmatter
+\pagestyle{back}
+% %---------------------------------------------------------------------------
+% % 附录
+% %---------------------------------------------------------------------------
+\appendix
+\phantomsection
+%\input{content/app1.tex}
+%\input{content/app2.tex}
+%\input{content/app3.tex}
+%\input{content/app4.tex}
+%\input{content/app5.tex}
+% 附录文件的最后都要加上\newpage,否则目录页码会出错
+
+% %---------------------------------------------------------------------------
+% % Index
+% %---------------------------------------------------------------------------
+
+% \printindex
+
+% 封底
+%--------------------------------------------------------------------------
+\setcounter{tp}{\value{TotPages}+2}
+\bookmark[page=\value{tp}, level=-1]{封底}
+\includepdf[noautoscale=true, width=\paperwidth]{backcover.pdf}
+\end{document}

@@ -1,0 +1,370 @@
+\chapter{矩阵的秩}
+
+矩阵的秩，是线性代数的要义与精髓。但是课本的给出的定义直接用了“子式”的概念。虽然与矩阵以及行列式很相关，但是并没有体现线性代数的精髓。所以本节，我会先讲一些第四章“解方程组"相关的内容，然后再讲课本上的第二章第五节的内容。
+
+\section{问题背景——解方程组}
+\subsection{来源}
+在中学中，我们接触过方程组。现在我们取一个有n个未知数，m个方程的线性方程组（方程组的常数项为0，如下）
+$$ f(x)=\left\{
+	\begin{aligned}
+		a_{11}x_1+a_{12}x_2+...+a_{1n}x_n & = & 0 \\
+		a_{21}x_1+a_{22}x_2+...+a_{2n}x_n & = & 0 \\
+		\vdots                                    \\
+		a_{m1}x_1+a_{m2}x_2+...+a_{mn}x_n & = & 0
+	\end{aligned}
+	\right.
+$$
+
+我们都知道，解方程组的时候，不是所有方程都可以作为一个单独的约束条件，有的方程是可以用其他几个方程推出来的，因此，我们需要研究方程真正的约束条件个数。
+\subsection{研究步骤——取方程组的系数矩阵}
+我们知道，上面的方程组中有意义的是每个未知数前面的系数，系数决定了方程组怎么解，有没有解，有多少解等诸多问题，我们将其提取出来，构成一个$m\times n$的矩阵：
+$$
+	\left (
+	\begin{matrix}
+			a_{11} & a_{12} & \cdots & a_{1n} \\
+			a_{21} & a_{22} & \cdots & a_{2n} \\
+			\vdots & \vdots & \ddots & \vdots \\
+			a_{m1} & a_{m2} & \cdots & a_{mn} \\
+		\end{matrix}
+	\right  )
+$$
+因此我们得到：方程组的研究被转化为了矩阵的研究
+\subsection{从方程组的有效约束条件——矩阵的秩}
+我们都知道，方程组的有效约束条件$\leq$方程个数，而有效约束条件的个数，放在其系数矩阵中，就称为\textbf{矩阵的秩}。
+\section{矩阵的秩的定义}
+\subsection{矩阵的子式}
+取一个$m\times n$的矩阵A，这是一个大矩阵。我们都学过分块矩阵，但是分块矩阵是对于一个矩阵的直接划分，切割形成了一些小矩阵出来。但是构造小矩阵不一定要用分割的方法，也可以提取某几行某几列，这就形成了子式的概念。
+\begin{definition}
+	对于矩阵$A$（$m\times n$），任意抽取$k$行$k$列，按照原有的左右、上下的顺序组成一个$k$阶行列式，这个行列式称为\textbf{矩阵$A$的$k$阶子式}。
+\end{definition}
+\subsection{根本定义}
+上面说了，矩阵的秩的出现，本身是为了解决方程组问题。但是作为线性代数本门学科，需要给出一个更普适性，以矩阵为基础的定义：
+\begin{definition}
+	矩阵$A$的不为零子式的最高阶数，称为矩阵的秩，记为$r(A)$。
+\end{definition}
+从此我们得到，我们可以从子式（行列式）的观点来学习矩阵的秩，也可以通过方程组进行理解。其中，方程组较为直观，但是可以推导的东西较少，主要作为一种辅助性的理解方式出现。
+\subsection{定义分析}
+我们知道，要求一个方程组的解（单一解/无数种解），无非要先用各种方法消除重复的条件，只保留有效约束的条件。而这一方法与前面矩阵化简化阶梯形的方法是一致的(这也正说明了矩阵与方程组的直接相通与一脉相承的关系)。
+
+而由此我们得到：对于矩阵$A$，\textbf{矩阵的秩就是$A$的阶梯型矩阵的非零行个数$r$}。
+
+这一点也可以由子式说明：矩阵的$r$个非零行与其$r$个首非零元，就已经构成了一个上三角行列式，此子式必定不为0。而一旦取得行数超过了$r$，就出现了零行，此子式一定为0。所以，矩阵的秩就是$r$\mn{后续讲义中，$r$直接表示$A$的秩。}。
+
+\section{秩的结论推导——第一部分，简单性质推导}
+\subsection{秩的有界性(名字是我自己起的)}
+\begin{property}
+	$0\leq r(A)\leq \min\{m,n\}$.
+\end{property}
+\begin{remark}
+	\begin{itemize}
+		\item 从方程组的角度上,有效行数肯定小于等于总行数；同时，有效行数肯定小于等于未知数个数。
+		\item 从子式的角度上，显然，$k$不可能比总行数/总列数多。
+	\end{itemize}
+\end{remark}
+
+\subsection{秩的转置不变性}
+\begin{property}
+	$r(A)=r(A^T)$.
+\end{property}
+\begin{remark}
+	从子式的角度上：先取A的r阶子式$|B|$。在A转置后的$A^T$中，再按照原本的行看为列，原本的列看为行的方法，再把$|B|$的元素重新提取出来形成$|B^T|$。由于行列式的转置不变性，所以秩也有转置不变性。
+\end{remark}
+\subsection{当矩阵变为$n$阶方阵}
+对$n$阶方阵，秩的最大值即为$n$。故：
+$$r(A)=n\Leftrightarrow\det(A)\neq 0$$
+此时，称$A$为满秩方阵(可逆方阵、非奇异方阵)；否则，$A$为降秩方阵(不可逆方阵、奇异方阵)。
+\section{秩的结论推导——第二部分，当矩阵遇见初等变换}
+\subsection{初等变换等价性}
+\begin{property}
+	若矩阵$A$经过若干次初等变换变成了矩阵$B$，则$r(A)=r(B)$
+\end{property}
+\begin{remark}
+	方程组角度：方程组进行的就是初等行变换，故初等行变换后自然有：秩不改变。又由秩的行列等价性，所以列变换后秩也不变。故：初等变换不改变矩阵的秩。
+\end{remark}
+\subsection{满秩方阵乘矩阵，秩不变}
+\begin{property}
+	设矩阵$A$、$P$、$Q$满足$A:m\times n$，$P:m\times m$可逆，$Q:n\times n$可逆，则有$r(PA)=r(A)$，$r(AQ)=r(A)$，$r(PAQ)=r(A)$。
+\end{property}
+\begin{remark}
+	初等变换角度：满秩方阵可以分解为初等矩阵，由初等变化的秩不变性易证。
+\end{remark}
+\subsection{矩阵的秩标准形式}
+任一非零矩阵$A$，可以化为左上角为单位矩阵，其余皆为0的矩阵$B$，矩阵$B$称为$A$的秩标准形，或者等价意义下的标准形，即必存在：$P:m\times m$可逆，$Q:n\times n$可逆，使得$PAQ= \left (
+	\begin{matrix}
+			I_r & 0 \\
+			0   & 0 \\
+		\end{matrix}
+	\right  )$
+
+此时，若$A_{m\times n}$秩为$m$(也称行满秩)，则$A$的秩标准形为$$\left(	\begin{matrix}
+			I_m & O_{m\times(n-m)} \\
+		\end{matrix}
+	\right)
+$$
+
+此时，若$A_{m\times n}$秩为$n$(也称列满秩)，则$A$的秩标准形为：$$\left(\begin{matrix}
+			I_m               & \\
+			O_{(m-n)\times n} & \\
+		\end{matrix}
+	\right)
+$$
+\subsection{矩阵的满秩分解}
+设$r(A_{m\times n})=r$，则存在列满秩矩阵$G_{m\times r}$和行满秩矩阵$H_{r\times n}$，使得$A=GH$其中，$r(G)=r(H)=r$。
+\begin{proof}
+	由矩阵的满秩形式，存在可逆矩阵$PQ$，使$$PAQ= \left (
+		\begin{matrix}
+				I_r & 0 \\
+				0   & 0 \\
+			\end{matrix}
+		\right  )=\left(\begin{matrix}
+				I_m & \\
+				O   & \\
+			\end{matrix}
+		\right)
+		\left(	\begin{matrix}
+				I_m & O \\
+			\end{matrix}
+		\right)$$
+	故左乘右乘过去之后，有：
+	$$A= P^{-1}\left(\begin{matrix}
+				I_m \\
+				O   \\
+			\end{matrix}
+		\right)
+		\left(	\begin{matrix}
+				I_m & O \\
+			\end{matrix}
+		\right)Q^{-1}$$
+	取$G= P^{-1}\left(\begin{matrix}
+				I_m \\
+				O   \\
+			\end{matrix}
+		\right),\mbox{取}H=	\left(	\begin{matrix}
+				I_m & O \\
+			\end{matrix}
+		\right)Q^{-1}$
+	证毕
+\end{proof}
+\section{关于矩阵的秩的二级结论}
+注意，此部分应用到的知识点，新生应该还没有接触到，但是不用怕，学了相应的知识点后就会了。
+\subsection{当你遇到$AB=0$}
+对于矩阵$AB$，如果$AB=0$，则${\rm rank}(A)+{\rm rank}(B)\leq n$。
+\begin{proof}
+	取$W$为方程$Ax=0$的解空间，故$\dim(W)=n-{\rm rank}(A)$,而对于B，其任意列向量$\beta_i$都满足$\beta_i\in W(i=1,2,...,n)$，故${\rm rank}(B)\leq \dim(W)$,故$r(A)+r(B)\leq n$.
+\end{proof}
+\subsection{Sylvester不等式}
+对于矩阵$A_{n\times n}$，$B_{n\times n}$，有${\rm rank}(AB)\geq {\rm rank}(A)+{\rm rank}(B)-n$。
+\begin{proof}
+	设${\rm rank}(A)=r$，易知$A$可以写为$P\left (
+		\begin{matrix}
+				I_r & O \\
+				O   & O \\
+			\end{matrix}
+		\right  )Q$，故
+
+	$$AB=P\left (
+		\begin{matrix}
+				I_r & O \\
+				O   & O \\
+			\end{matrix}
+		\right  )QB$$
+	考虑$QB=\left (
+		\begin{matrix}
+				H_1 \\
+				H_2 \\
+			\end{matrix}
+		\right  )$，其中，$H_1:r\times n,H_2:r\times (n-r)\times n$。
+
+	则出现
+	$$AB=P\left (
+		\begin{matrix}
+				I_r & O \\
+				O   & O \\
+			\end{matrix}
+		\right  )\left (
+		\begin{matrix}
+				H_1 \\
+				H_2 \\
+			\end{matrix}
+		\right  )=P\left (
+		\begin{matrix}
+				H_1 \\
+				0   \\
+			\end{matrix}
+		\right  )$$
+
+	故${\rm rank}(AB)={\rm rank}\qty(\left (
+		\begin{matrix}
+				H_1 \\
+				0   \\
+			\end{matrix}
+		\right  ))={\rm rank}(H_1),{\rm rank}(B)={\rm rank}(QB)={\rm rank}(\left (
+		\begin{matrix}
+				H_1 \\
+				H_2 \\
+			\end{matrix}
+		\right  ))$，由${\rm rank}(H_1)+{\rm rank}(H_2){\rm rank}(H_1)={\rm rank}(AB)\geq {\rm rank}(B)+r-n$
+	原式得证。
+\end{proof}
+\subsection{当遇见rank$(A+B)$}
+$${\rm rank}(A+B)\leq {\rm rank}(A)+{\rm rank}(B)$$
+\begin{proof}
+	设$A$的列向量为$\alpha_i(i=1,\cdots,n)$，设$B$的列向量为$\beta_j(j=1,\cdots,n)$，取$\alpha_i,\cdots,\alpha_s$为$A$的极大线性无关组取$\beta_i,\cdots,\beta_r$为$B$的极大线性无关组，$A+B$的任意列向量可以由$<\alpha_i,\cdots,\alpha_s,\beta_i,\cdots,\beta_r>$线性表出，所以不等式成立。
+\end{proof}
+\subsection{伴随矩阵的秩}
+$$ r(A^*)=\left\{
+	\begin{aligned}
+		n, & r(A)=n      \\
+		1, & r(A)=n-1    \\
+		0, & r(A)\le n-1 \\
+	\end{aligned}
+	\right.
+$$
+\begin{proof}
+	由矩阵存在逆，故矩阵必然为$n\times n$方阵。
+
+	I.若$r(A)=n=r(A^{-1})$，故由：$A^{*}=|A|A^{-1}$,得到$r(A^{*})=n$。
+
+	II.若$r(A)=n-1$,故存在$n-1$阶子式不为0，故$r(A^*)\geq 1$,而$AA^*=|A|I=0$，$r(AA^*)+n=n\geq r(A)+r(A^*)$，故$r(A^*)\leq 1$，总体$r(A^*)=1$。
+
+	III.若$r(A)\leq n-1,A^*=0$故$r(A^*)=0$。
+\end{proof}
+
+\section{模型、套路、题型}
+\subsection{根据秩的数值，针对具体矩阵处理}
+\begin{problem}
+	设$n(n\geq 3)$阶矩阵$A=\left (
+	\begin{matrix}
+			1   & a   & a   & ... & a   \\
+			a   & 1   & a   & ... & a   \\
+			a   & a   & 1   & ... & a   \\
+			... & ... & ... & ... & ... \\
+			a   & a   & a   & ... & 1   \\
+		\end{matrix}
+	\right  )$，若$A$的秩为$n-1$，则$a = $?
+\end{problem}
+\begin{solution}
+	不是满秩，因此$|A|=0$。
+\begin{align*}
+	|A|&=[(n-1)a+1]=\left |
+	\begin{matrix}
+		1   & a   & a   & ... & a   \\
+		1   & 1   & a   & ... & a   \\
+		1   & a   & 1   & ... & a   \\
+		... & ... & ... & ... & ... \\
+		1   & a   & a   & ... & 1   \\
+	\end{matrix}
+	\right  |=[(n-1)a+1]=\left |
+	\begin{matrix}
+		1   & a   & a   & ... & a   \\
+		0   & 1-a & 0   & ... & 0   \\
+		0   & 0   & 1-a & ... & 0   \\
+		... & ... & ... & ... & ... \\
+		0   & 0   & 0   & ... & 1-a \\
+	\end{matrix}
+	\right  |\\
+	&=[(n-1)a+1](1-a)^{n-1}=0
+\end{align*}
+
+从而$a=\frac{1}{1-n}$或者$a=1$，若$a=1$，则$r(A)=1$，舍去，则$a=\frac{1}{1-n}$\mn{一般根据行列式为零会得到可能存在的数值。此时要依据秩的具体数值，逆，矩阵的特点来判定无效的矩阵。}。
+\end{solution}
+
+\subsection{初等变换求矩阵的秩}
+\begin{problem}
+	求矩阵$$\left (
+	\begin{matrix}
+			2  & -1 & 3       \\
+			1  & -3 & 4       \\
+			-1 & 2  & \lambda \\
+		\end{matrix}
+	\right  )$$的秩。
+\end{problem}
+\begin{solution}
+	先化为阶梯型矩阵(原理：初等变换秩不变)，然后阶梯型就直接根据定义看出来秩的数值了。
+$$A=\left (
+	\begin{matrix}
+			2  & -1 & 3       \\
+			1  & -3 & 4       \\
+			-1 & 2  & \lambda \\
+		\end{matrix}
+	\right  )\xrightarrow{r_1\leftrightarrow r_2}\left (
+	\begin{matrix}
+			1  & -3 & 4       \\
+			2  & -1 & 3       \\
+			-1 & 2  & \lambda \\
+		\end{matrix}
+	\right  )\xrightarrow[r_3+r_1\times 1]{r_2+r_1\times(-2)} \left (
+	\begin{matrix}
+			1 & -3 & 4         \\
+			0 & 5  & -5        \\
+			0 & -1 & \lambda+4 \\
+		\end{matrix}
+	\right  )$$
+$$\xrightarrow{r_2\times\frac{1}{5}}\left (
+	\begin{matrix}
+			1 & -3 & 4         \\
+			0 & 1  & -1        \\
+			0 & -1 & \lambda+4 \\
+		\end{matrix}
+	\right  )\xrightarrow{r_3+r_2}\left (
+	\begin{matrix}
+			1 & -3 & 4         \\
+			0 & 1  & -1        \\
+			0 & 0  & \lambda+3 \\
+		\end{matrix}
+	\right  )$$
+
+当$\lambda=-3$时，有二阶子式不为0，所以$r(A)=2$;
+
+当$\lambda\neq-3$时，有三阶子式不为0，所以$r(A)=3$。
+\end{solution}
+
+\subsection{根据具体的条件，处理某个性质的秩的证明题}
+\begin{problem}
+	证明对于任意一个秩为1的$n$阶方阵，$A$可以表示为$[a_1,a_2, \cdots,a_n]^{T}(b_1,b_2,...,b_n)$，且$A^2=kA$\mn{本题三个条件的关系常常出现在考试题里，一定要多留意。}。
+\end{problem}
+\begin{proof}
+	由$r(A)=1$，必然其余行向量是某一行向量的倍数。
+	\begin{enumerate}
+		\item 不妨设$A=\left (
+			\begin{matrix}
+					a_1b_1 & a_1b_2 & ... & a_1b_n \\
+					a_2b_1 & a_2b_2 & ... & a_2b_n \\
+					...    & ...    & ... & ...    \\
+					a_nb_1 & a_nb_2 & ... & a_nb_n \\
+				\end{matrix}
+			\right  )$,从而$A=[a_1,a_2,...,a_n]^T(b_1,b_2,...,b_n)$
+		\item $A^2=[a_1,a_2,...,a_n]^T(b_1,b_2,...,b_n)[a_1,a_2,...,a_n]^T(b_1,b_2,...,b_n)=\sum_{i=1}^{n}a_ib_iA$，即$A^2=kA$
+	\end{enumerate}
+\end{proof}
+
+\begin{problem}
+	设A为$m\times n$矩阵，B为$n\times m$矩阵，证明：当$m\ge n$时，方阵$C=AB$不可逆。
+\end{problem}
+\begin{solution}
+	因为$r(C)=r(AB)\leq\min{r(A),r(B)}\leq\min{m,n}$，实际$m\ge n$，故$\min{m,n}=n$，从而$m$阶方阵$C$来说，有$r(C)\leq\min{m,n}\le m$。
+\end{solution}
+\begin{remark}
+	做题就是要不断考虑处理对象的性质，对于矩阵而言，包括：矩阵的大小$(m,n)$、秩、行列式、相应的方程的解与解空间等($Ax=0/Ax=b$)。这些性质或许与结论联系，或许方便构造，做题的过程要仔细思考它们。
+\end{remark}
+
+\begin{problem}
+	设$A$是$n$阶方阵，且$A^2=E$，试证明：$r(A+E)+r(A-E)=n$。
+\end{problem}
+\begin{proof}
+	对于题设结论，通过不同的处理得到不同形式，就会对应多个结论。
+	$A^2-E=(A+E)(A-E)=O$，故$r(A+E)+r(A-E)\le n$
+又有$r(A+E)+r(A-E)\ge r[(A+E)-(A-E)]=r(2E)=n$
+\end{proof}
+\begin{remark}
+	本题的一部分结论会进行特殊化，比如如果$A$是二阶矩阵且$A\neq ±E$，那么$A+E$，$A-E$的秩就都是1。
+\end{remark}
+
+\begin{problem}
+	设$n$阶方阵$A$，$B$满足$A^2=A$，$B^2=B$，且$E-A-B$可逆，证明：$r(A)=r(B)$。
+\end{problem}
+\begin{proof}
+	题目中有一个好玩的条件：且$E-A-B$可逆。
+	$A(E-A-B)=A-A^2-AB=-AB$,故$r(A)=r(AB)$,同理$r(B)=r(AB)$，故$r(A)=r(B)$。
+\end{proof}
+用关于秩的结论也可以证明，读者可以自行证明。

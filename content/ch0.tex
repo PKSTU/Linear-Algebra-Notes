@@ -1,0 +1,121 @@
+\makeatletter
+\renewcommand{\@makeschapterhead}[1]{%
+  \addtocontents{toc}{\protect\hypertarget{chap:\thechapter}{}}%  跳转回目录
+  \checkoddpage
+  \@ifoddpage{ % 奇数页
+      \begin{tikzpicture}[remember picture,overlay]
+        \node at (current page.north west)
+          {
+            \begin{tikzpicture}[remember picture,overlay]
+              \draw[fill=lbdeepblue,draw opacity=0]
+                ++(0,-2cm) rectangle ++(\paperwidth,-4pt);
+              \node[inner sep=12pt,below left] (chapter)
+                at  +(\paperwidth-1.2cm,-2.2cm) {\color{lbdeepblue}\titlefont\Huge
+                \texorpdfstring{\protect\hyperlink{chap:\thechapter}{#1}}{#1}};
+              \draw[line width=2pt,color=lbgreen] 
+                ++(\paperwidth-1.2cm,0) |- ($(chapter.south west)+(0,4pt)$);
+            \end{tikzpicture}
+          };
+      \end{tikzpicture}
+      \vspace{7cm}
+    % 页眉
+    % \renewcommand{\chaptermark}[1]{\markboth{\kaiti #1}{}}%
+    \renewcommand{\chaptermark}[1]{\markboth{\normalfont\kaiti %
+    \protect\hyperlink{chap:\thechapter}{#1}  %
+    }%
+    {}%
+    }%
+    \chaptermark{#1}%
+  }{% 偶数页
+      \begin{tikzpicture}[remember picture,overlay]
+        \node at (current page.north west)
+          {
+            \begin{tikzpicture}[remember picture,overlay]
+              \draw[fill=lbdeepblue,draw opacity=0]
+                ++(0,-2cm) rectangle ++(\paperwidth,-4pt);
+              \node[inner sep=12pt,below right] (chapter)
+                at  +(1.2cm,-2.2cm) {\color{lbdeepblue}\titlefont\Huge
+                \texorpdfstring{\protect\hyperlink{chap:\thechapter}{#1}}{#1}};
+              \draw[line width=2pt,color=lbgreen] 
+                ++(1.2cm,0) |- ($(chapter.south east)+(0,4pt)$);
+            \end{tikzpicture}
+          };
+      \end{tikzpicture}
+      \vspace{7cm}
+    % 页眉
+    % \renewcommand{\chaptermark}[1]{\markboth{\kaiti #1}{}}%
+    \renewcommand{\chaptermark}[1]{\markboth{\normalfont\kaiti %
+    \protect\hyperlink{chap:\thechapter}{#1}  %
+    }%
+    {}%
+    }%
+    \chaptermark{#1}%
+  }%
+
+  % 上面这个空行不能删掉
+}
+\makeatother
+
+\chapter*{绪论}
+\addcontentsline{toc}{chapter}{绪论}
+
+众所周知,雷达是一个信息传输和处理的系统,它区别于通讯系统之处,在于信息的调制过程发生在目标散射之时.显然,雷达信息传输过程也会受到各种外界(自然和人为的)干扰和内部噪声干扰.所以雷达信号理论的发展也是建立在信息论,特别是信号检测理论的基础之上的.
+
+早在1943年North\mn{重排版删去了原著的音译名.}\refcite{1} 提出匹配滤波器理论,大大推动了雷达检测能力的提高. 1950年Lawson把匹配滤波器理论系统地载入著名的专著\refcite{2}.
+
+1950年Woodward\refcite{3} 把香农(Shannon)所建立的基础信息论\on{Коrельникоn也是基础信息论的创始人之一.}中关于信息量的概念推广应用于雷达信号检测中来,认为从提取最多有用信息的观点出发,理想的雷达接收机同样应该是一个后验概率的计算装置.
+
+从统计学的观点看,雷达观测是一个典型的统计判断过程. Hance\refcite{4} 和Marcum\refcite{5} 最早把Middleton \refcite{6} 和Neyman\refcite{7} 建立的统计检测理论应用于雷达. Swerling\refcite{8} 结合雷达目标起伏特性建立了四种目标起伏模型,得到许多有用的目标检测数据.
+
+在信号检测理论的历史上,曾出现过许多最佳准则,已经证明,从各种最佳检测准则出发,导出的最佳信号检测系统都是由一个似然比计算装置和一个门限检测器组成的.根据不同的最佳准则,门限取值不同.在高斯噪声下对确知信号的似然比计算装置实质上就是一个匹配滤波器.至此,按最大信噪比准则导出的匹配滤波器与按统计判决理论导出的似然比计算装置之间的内在联系便显而易见了.
+
+为了解决杂波中的信号检测问题, Urkowitz\refcite{9} 把匹配滤波器理论推广到色噪声的场合,提出``白化滤波器''和''逆滤波器''的概念.之后, Manasse\refcite{10} 研究了同时存在白噪声和杂波干扰下的最佳滤波器,为抑制杂波波形优化问题打下了理论基础.
+
+Cramer\refcite{11} 继承Fisher 的工作,建立了经典的参量估计理论. Slepian 把经典的最大似然估计理论应用于雷达\refcite{12},稍后SkoInik\refcite{13} 对雷达测量的理论精度作了系统的分析和总结.
+
+值得指出的是伍德沃德不仅在发展雷达倍号检测理论上作出了很大贡献,而且在著名的著作\refcite{14} 中提出有名的雷达模糊原理,定义了模糊函数及分辨常数等新概念,奠定了雷达分辨理论的基础.并首次触及波形设计问题,指出距离分辨力和测量精度取决于信号的带宽而非时宽,从而大大推动了雷达信号理论的发展.稍后的Helstrom的著作\refcite{15} 应该说也是雷达信号统计检测理论方面很好的一本参考书.
+
+二次世界大战期间及战后初期,在实现了雷达信号最优处理的前提下,典型的脉冲雷达在同时提高发现能力、距离和速度测量精度以及分辨力方面遇到了不可克服的矛盾,为了解决这个问题,也为了反雷达侦察的需要,各国先后开展了应用``复杂波形''代替传统的脉冲信号的研究.最早获得实际应用的是线性调频脉冲压缩信号\mrefcite{16}{22}.以后相继出现非线性调频、相位编码\refcite{23} 和相参脉冲串等大时宽--带宽信号.
+
+由于雷达发射波形不仅决定了信号处理方法,而且直接影响系统的分辨力、测量精度以及抑制杂波能力等潜在性能.于是,波形设计就成了雷达系统最佳综合的重要内容,逐渐形成现代雷达理论的重要分支.
+
+开始,人们希望找到一种``理想''的波形,以适应各种不同的目标环境和工作要求,很快就发现这种努力是徒劳的.
+
+雷达波形设计一直沿着两种不同的途径进行研究,一种是Sussman等人\mrefcite{24}{26} 所走的波形综合的道路,通过模糊函数最优综合的方法,得到所需要的最优波形.遗憾的是这方面不仅遇到了数学上的困难,而且综合得到的复杂调制波形,也往往是技术上难以实现的信号.不过一维模糊函数的综合借助于相位逗留原理获得了较好的解决\refcite{27}. Rihaczek\refcite{28} 提出另外一种``简便的波形选择途径'',即根据目标环境图和信号模糊图匹配的原则,选择合适的信号类型.进而兼顾技术实现的难易程度,选择合适的信号形式和波形参数.近代先进的数字化多功能雷达大多采用多种发射信号,以适应不同的战术用途.随着电子战的发展,现代雷达面临的目标环境不仅复杂多端,而且是瞬息万变的,所以波形自适应是个值得重视的发展方向.
+
+综上所述,可以看到,雷达信号理论的形成与发展,目的在于提高雷达信号传输的可靠性和有效性.显然,这里不是针对系统的某个环节或某个电路的具体措施,而是对整个系统进行最优综合.概括地说,雷达信号理论研究的课题包括从理论上探讨信号最优处理方法和最优波形的选择等两方面.这里涉及如何建立系统的数学模型,确定最优准则以及寻求最优系统结构(数学运算结构)等方面的问题.所以雷达信号理论是发展各种雷达新体制的理论基础.此外,雷达信号理论也是对实际雷达系统进行性能分析的理论指导,用以阐明实际雷达系统的合理性及改进的可能性.相信随着雷达信号理论的发展,雷达系统的威力、精度、分辨力以及反侦察、抗干扰能力必将得到进一步提高,雷达回波信号中所包含的有用信息必将得到更充分的利用.
+
+雷达信号理论既然是设计近代雷达的理论基础,在培养高等科技人材的院校设置这门课程就显得十分必要了.当然,雷达信号理论涉及面很广,内容十分丰富,本书只是个导论性的书籍,着重介绍雷达信号最优检测、最优估计、分辨理论以及波形设计等基本问题,为读者进一步掌握近代雷达理论提供必要的基础.
+
+\plainsection{参考文献}
+
+\begin{references}
+    \refitem \mn*{原著年代久远,参考文献格式不尽规范,但囿于重排者时间和精力有限,暂保留原著样式,只做微调.}D.O.North,Analysis of Factors which Determine Signal-to-noise Discrimination in Pulsed Carrier Systems, RCA Rept, PTR-6C, June 1943. (PIEEE Vol 51, pp 1015, 1969重印).
+    \refitem J. L. Lawson and G. E. Uhienbeck, Threshold Signals, Radiation Lab. Series NO.24, McGraw-Hill, 1950.
+    \refitem P. M. Woodward and I. L. Devies, A Theory of Radar Information, Phil. Mag. Vol 41, pp 1001--1017, 1950.
+    \refitem H. V. Hance, The Optimization and Analysis of Systems for the Detection of Pulsed Signals in Random Noise, D. Sc Dissertation, MIT Cambridge Mass, 1951.
+    \refitem J. I. Marcum, A statistical Theory of Target Detection by Pulsed Radar, RAND Corp Mem.RM-754, Dec.1947; RM-753, July 1948. (IRE Trans, Vol IT-6 NO.2, 1960重印).
+    \refitem D. Middleton and J. H. Van Vleck, Theoretical Comparison of the Visual, Aural and Meter Reception of Pulsed Signals in the Presence of Noise, J. of Appl. Phys. Vol 17, pp 940--971, Nov. 1946.
+    \refitem J. Neyman and E. J. Pearson, On the Problem of the Most Efficient Tests of Statistical Hypothesses, Philos. Trans. Royal Soc. London Series A, 23 pp 289--337, 1931.
+    \refitem P. Swerling, Probability of Detection for Fluctuating Targets RAND Corp Res Mem. RM-1217 March 1954.(IRE Trans, Vol IT-6, pp 269--308 April 1960重印).
+    \refitem H. Urkowitz, Filter for Detection of Small Signals in Clutter, J. Appl. Phy. Vol 24 pp 1024, July 1953.
+    \refitem R. Manasse, The Use of Pulse Coding to Discriminate Against Clutter, AD260. 230, 1961.
+    \refitem H. Cramer, Methods of Mathematical Statistics, Princeton University Press, 1946.
+    \refitem D. Slepien, Estimation of Signal Parameters in the Presence of Noise, IRE Trans. Vol IT-4, pp 68--89. March 1954.
+    \refitem M. I. Skolnik, Theoretical Accuracy of Radar Measurements PGANE Trans. ANE-7 NO.4 pp 123--129, 1960.
+    \refitem P. M. Woodward, Probability and Information Theory with Application to Radar, McGraw-Hill, 1953.
+    \refitem C. W. Helstrom, Statistical Theory of Signal Detection, Pergamon Press, 1960.
+    \refitem E. Huffman, German Patent NO.768, 068, 1940.
+    \refitem D. O. Sproule and A. J. Hughes, British Patent NO.604, 429, 1948.
+    \refitem W. Cauer, German Patent NO.892, 772, 1950.
+    \refitem R. H. Dicke, U.S. Patent, NO.2, 624, 876, 1953.
+    \refitem S. Darlington, U. S. Patent, NO.2, 678, 997, 1954.
+    \refitem Я. Д. Шнрман,Способ повышения разрешающей способности радиолока\-ционных станций и устройство для его осуществления, Авт. свид. NO.14\-6803 по Заявке NO.461974/40 от 25 Июля 1956.
+    \refitem J. E. Chin and C. E. Cook, The Mathematics of Pulse Compression, Sperry Eng. Review Vol 12, pp 11--16 Oct. 1959.
+    \refitem W. M. Sibert, A Radar Detection Philocophy, IRE Trans Vol IT-2, pp 204--221, Sept. 1956.
+    \refitem C. H. Wilcox, The Synthesis Problen for Radar Ambiguity Function, AD 2394\-27, 1960.
+    \refitem S. M. Sussman, Least-square Synthesis of Radar Ambiguity Functions, IRE Trans. Vol IT-8 NO.3 1962.
+    \refitem J. D. Walf, G. M. Lee and C. E. Suyo, Radar Waveform Synthesis by Mean-square Optimization Techniques, IEEE Trans. Vol AES-5, July 1969.
+    \refitem E. L. Key, E. N. Fowle and R. D. Haggarty, A Method of Designing Signals of Large Time-ba-ndwidth Production, IRE Int. Conv. Record pt 4 pp 146--155, 1961.
+    \refitem A. W. Rihaczek, Radar Waveform Selection-A Simplified Approach, IEEE Trans. Vol AES-7, Nov. 1971.
+\end{references}

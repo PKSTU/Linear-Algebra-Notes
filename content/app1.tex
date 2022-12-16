@@ -1,0 +1,105 @@
+% 修改附录部分的章节样式
+\makeatletter
+\let\oldmakeschapterhead\@makeschapterhead
+\renewcommand{\@makeschapterhead}[1]{
+	\addtocontents{toc}{\protect\hypertarget{app:\theappendix}{}}%  跳转回目录
+	\checkoddpage
+	\@ifoddpage{ % 奇数页
+		\begin{tikzpicture}[remember picture,overlay]
+			\node at (current page.north west)
+			{
+				\begin{tikzpicture}[remember picture,overlay]
+					\draw[fill=lbdeepblue,draw opacity=0]
+					++(0,-2cm) rectangle ++(\paperwidth,-4pt);
+					\node[color=lbdeepgreen,inner sep=12pt,below left] (chapter)
+					at  +(\paperwidth-1.2cm,-2cm) {\Huge\titlefont\fontspec{Palatino-Roman}
+							\protect\hyperlink{app:\theappendix}{\theappendix}};
+					\draw[line width=2pt,color=lbgreen]
+					++(\paperwidth-1.2cm,0) |- ($(chapter.south west)+(0,4pt)$);
+					\node[color=lbdeepblue,left=7pt,anchor=north east] at (chapter.south east)
+					{
+						\parbox[c][][c]{18cm}
+						{\flushright\Huge\bfseries\titlefont\fontspec{Palatino-Roman}
+							\texorpdfstring{\protect\hyperlink{app:\theappendix}{#1}}{#1}}
+					};
+				\end{tikzpicture}
+			};
+		\end{tikzpicture}
+		\vspace{7cm}
+		% \renewcommand{\chaptermark}[1]{\markboth{\normalfont\kaiti \theappendix\; #1}{}}%
+		% \renewcommand{\sectionmark}[1]{\markright{{\pplj\thesection}\quad #1}}%
+    \renewcommand{\chaptermark}[1]{\markboth{\normalfont\kaiti%
+    \protect\hyperlink{app:\theappendix}{\theappendix\; #1}%
+    }%
+    {}%
+    }%
+		\chaptermark{#1}%
+	}{ % 偶数页
+		\begin{tikzpicture}[remember picture,overlay]
+			\node at (current page.north west)
+			{
+				\begin{tikzpicture}[remember picture,overlay]
+					\draw[fill=lbdeepblue,draw opacity=0]
+					++(0,-2cm) rectangle ++(\paperwidth,-4pt);
+					\node[color=lbdeepgreen,inner sep=12pt,below right] (chapter)
+					at  +(1.2cm,-2cm) {\Huge\titlefont\fontspec{Palatino-Roman}
+							\protect\hyperlink{app:\theappendix}{\theappendix}};
+					\draw[line width=2pt,color=lbgreen]
+					++(1.2cm,0) |- ($(chapter.south east)+(0,4pt)$);
+					\node[color=lbdeepblue,right=7pt,anchor=north west] at (chapter.south west)
+					{
+						\parbox[c][][c]{18cm}
+						{\flushleft\Huge\bfseries\titlefont\fontspec{Palatino-Roman}
+							\texorpdfstring{\protect\hyperlink{app:\theappendix}{#1}}{#1}}
+					};
+				\end{tikzpicture}
+			};
+		\end{tikzpicture}
+		\vspace{7cm}
+		% \renewcommand{\chaptermark}[1]{\markboth{\normalfont\kaiti \theappendix\; #1}{}}%
+		% \renewcommand{\sectionmark}[1]{\markright{{\pplj\thesection}\quad #1}}%
+    \renewcommand{\chaptermark}[1]{\markboth{\normalfont\kaiti%
+    \protect\hyperlink{app:\theappendix}{\theappendix\; #1}%
+    }%
+    {}%
+    }%
+		\chaptermark{#1}%
+	}
+}
+\let\newmakeschapterhead\@makeschapterhead
+\makeatother
+
+\renewcommand{\thechapter}{\Alph{appendix}}   % 修改chapter的样式
+\numberwithin{equation}{chapter}               % 让公式编号跟随chapter编号
+
+\appendixchapter{基本初等函数的导数公式表}\label{app:1}
+
+{\small
+\noindent\begin{tblr}{X[c]X[c]}
+    \toprule[lbdeepgreen]
+	{\color{lbdeepgreen}$f(x)$} & {\color{lbdeepgreen}$f'(x)$} \\  \midrule[lbgreen]
+	$C$ & 0 \\
+	\hline[dashed,lbgreen]
+	$x^{\mu}$ & $\mu x^{\mu -1}$ \\
+	\hline[dashed,lbgreen]
+	$a^x$ & $a^x\ln{a}$ \\
+	${\rm e}^x$ & ${\rm e}^x$ \\
+	\hline[dashed,lbgreen]
+	$\log_a{x}$ & $\frac{1}{x\ln{a}}$ \\
+	$\ln{x}$ & $\frac{1}{x}$ \\
+	\hline[dashed,lbgreen]
+	$\sin{x}$ & $\cos{x}$ \\
+	$\cos{x}$ & $-\sin{x}$ \\
+	$\tan{x}$ & $\sec^2{x}$ \\
+	$\cot{x}$ & $-\csc^2{x}$ \\
+	$\sec{x}$ & $\sec{x}\tan{x}$ \\
+	$\csc{x}$ & $-\csc{x}\cot{x}$ \\
+	\hline[dashed,lbgreen]
+	$\arcsin{x}$ & $\frac{1}{\sqrt{1-x^2}}$ \\
+	$\arccos{x}$ & $-\frac{1}{\sqrt{1-x^2}}$ \\
+	$\arctan{x}$ & $\frac{1}{1+x^2}$ \\
+	$\arccot{x}$ & $-\frac{1}{1+x^2}$ \\
+	\bottomrule[lbdeepgreen]
+\end{tblr}}
+
+\newpage
